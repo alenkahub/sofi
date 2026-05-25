@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ДОСЬЕ // SOFI LEFEVRE // RÉPUBLIQ̈UE REDLAND</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #07080d;
+    --bg2:       #0d0f18;
+    --bg3:       #111422;
+    --red:       #c0282c;
+    --red-dim:   #7a1518;
+    --red-glow:  rgba(192,40,44,0.18);
+    --gold:      #c9a84c;
+    --gold-dim:  #7a6230;
+    --text:      #d4cfc5;
+    --text-dim:  #7a7770;
+    --text-pale: #a39e96;
+    --border:    rgba(192,40,44,0.30);
+    --border2:   rgba(201,168,76,0.18);
+    --mono:      'Share Tech Mono', monospace;
+    --sans:      'Rajdhani', sans-serif;
+    --serif:     'Crimson Pro', Georgia, serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.75;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* scanline overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 9999;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.06) 2px,
+      rgba(0,0,0,0.06) 4px
+    );
+    pointer-events: none;
+  }
+
+  /* noise texture */
+  body::after {
+    content: '';
+    position: fixed; inset: 0; z-index: 9998;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: .5;
+    pointer-events: none;
+  }
+
+  /* ── PAGE WRAPPER ── */
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 60px 32px 100px;
+    position: relative;
+  }
+
+  /* ── HEADER BAND ── */
+  .header-band {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+    opacity: 0;
+    animation: fadeUp .6s .1s forwards;
+  }
+  .header-band .line { flex: 1; height: 1px; background: var(--red); }
+  .header-band span {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .2em;
+    color: var(--red);
+    white-space: nowrap;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 0;
+    border: 1px solid var(--border);
+    background: var(--bg2);
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeUp .7s .25s forwards;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at top right, rgba(192,40,44,.07) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  /* portrait */
+  .portrait-wrap {
+    position: relative;
+    overflow: hidden;
+    background: #0a0c14;
+    border-right: 1px solid var(--border);
+  }
+  .portrait-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    filter: sepia(20%) contrast(1.05);
+    transition: filter .4s;
+  }
+  .portrait-wrap:hover img { filter: sepia(0%) contrast(1.1); }
+  .portrait-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(7,8,13,.85) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .portrait-stamp {
+    position: absolute;
+    bottom: 14px; left: 14px;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--red);
+    letter-spacing: .12em;
+    line-height: 1.6;
+  }
+
+  /* stats panel */
+  .stats-panel {
+    padding: 36px 32px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .classified-stamp {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: .25em;
+    color: var(--red);
+    margin-bottom: 10px;
+    opacity: .7;
+  }
+  .name-block {
+    margin-bottom: 22px;
+  }
+  .name-block .given {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: .35em;
+    color: var(--text-pale);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .name-block .surname {
+    font-family: var(--sans);
+    font-size: 42px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    color: #fff;
+    text-transform: uppercase;
+    line-height: 1;
+    text-shadow: 0 0 40px rgba(192,40,44,.3);
+  }
+  .name-block .rank-tag {
+    display: inline-block;
+    margin-top: 9px;
+    background: var(--red);
+    color: #fff;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .2em;
+    padding: 3px 10px;
+    text-transform: uppercase;
+  }
+
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 24px;
+  }
+  .stat { display: flex; flex-direction: column; gap: 2px; }
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: .2em;
+    color: var(--red-dim);
+    text-transform: uppercase;
+  }
+  .stat-value {
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: .04em;
+  }
+  .stat-value.gold { color: var(--gold); }
+  .stat-value.rep  { color: #5ab4d4; }
+
+  .loyalty-bar-wrap { grid-column: 1 / -1; margin-top: 4px; }
+  .loyalty-label {
+    display: flex; justify-content: space-between;
+    font-family: var(--mono); font-size: 9px;
+    color: var(--text-dim); letter-spacing: .12em;
+    margin-bottom: 5px;
+  }
+  .loyalty-bar {
+    height: 4px;
+    background: linear-gradient(to right, #5ab4d4, #c0282c);
+    position: relative;
+    border-radius: 2px;
+  }
+  .loyalty-marker {
+    position: absolute;
+    top: -3px;
+    left: 72%;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--red);
+    transform: translateX(-50%);
+  }
+
+  /* ── BRACKET BOX ── */
+  .bracket-box {
+    position: relative;
+    padding: 32px 36px;
+    margin-top: 40px;
+    opacity: 0;
+    animation: fadeUp .7s var(--delay, .4s) forwards;
+  }
+  .bracket-box::before,
+  .bracket-box::after,
+  .bracket-box .br-bl,
+  .bracket-box .br-br {
+    content: '';
+    position: absolute;
+    width: 22px; height: 22px;
+    border-color: var(--red);
+    border-style: solid;
+  }
+  .bracket-box::before  { top: 0; left: 0;  border-width: 2px 0 0 2px; }
+  .bracket-box::after   { top: 0; right: 0; border-width: 2px 2px 0 0; }
+  .bracket-box .br-bl   { bottom: 0; left: 0;  border-width: 0 0 2px 2px; }
+  .bracket-box .br-br   { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .28em;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .section-text {
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.8;
+    color: var(--text-pale);
+    font-weight: 300;
+  }
+  .section-text p + p { margin-top: 1em; }
+  .section-text strong { color: var(--text); font-weight: 600; }
+  .section-text em { color: var(--gold); font-style: italic; }
+
+  /* ── FULL-WIDTH IMAGE ── */
+  .img-full {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+    border: 1px solid var(--border);
+    filter: sepia(15%) contrast(1.05) brightness(.95);
+  }
+  .img-caption {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: .18em;
+    color: var(--text-dim);
+    text-align: right;
+    padding: 6px 4px 0;
+    margin-bottom: 16px;
+  }
+
+  .img-wrap {
+    margin: 30px 0 0;
+    opacity: 0;
+    animation: fadeUp .6s var(--delay,.5s) forwards;
+  }
+
+  /* system art strip */
+  .system-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 28px 0;
+    opacity: 0;
+    animation: fadeUp .6s .6s forwards;
+  }
+  .system-strip .sys-img-wrap {
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: #080a12;
+    position: relative;
+  }
+  .system-strip img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: sepia(20%) hue-rotate(180deg) saturate(1.2) brightness(.8);
+    transition: transform .5s, filter .5s;
+  }
+  .system-strip .sys-img-wrap:hover img {
+    transform: scale(1.04);
+    filter: sepia(5%) hue-rotate(180deg) saturate(1.3) brightness(.95);
+  }
+  .sys-label {
+    position: absolute;
+    bottom: 8px; left: 8px;
+    font-family: var(--mono);
+    font-size: 8px;
+    letter-spacing: .14em;
+    color: rgba(255,255,255,.6);
+  }
+
+  /* ── ABILITY GRID ── */
+  .ability-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 4px;
+  }
+  .ability-card {
+    border: 1px solid var(--border);
+    background: linear-gradient(135deg, var(--bg3), var(--bg2));
+    padding: 16px 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .ability-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--red);
+  }
+  .ability-title {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 7px;
+  }
+  .ability-desc {
+    font-family: var(--serif);
+    font-size: 14.5px;
+    color: var(--text-pale);
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  .bar-row { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+  .bar-item {}
+  .bar-header {
+    display: flex; justify-content: space-between;
+    font-family: var(--mono); font-size: 9px;
+    color: var(--text-dim); letter-spacing: .12em;
+    margin-bottom: 4px;
+  }
+  .bar-track {
+    height: 3px;
+    background: rgba(255,255,255,.07);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    background: var(--red);
+    border-radius: 2px;
+    transform-origin: left;
+    animation: barGrow 1s var(--delay,.8s) cubic-bezier(.4,0,.2,1) both;
+  }
+  .bar-fill.gold { background: var(--gold); }
+  .bar-fill.blue { background: #5ab4d4; }
+
+  @keyframes barGrow {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+
+  /* ── SHIP IMAGE ── */
+  .ship-wrap {
+    margin-top: 40px;
+    opacity: 0;
+    animation: fadeUp .7s .5s forwards;
+  }
+  .ship-frame {
+    border: 1px solid var(--border2);
+    background: #080a12;
+    position: relative;
+    overflow: hidden;
+  }
+  .ship-frame img {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+    max-height: 340px;
+    filter: sepia(5%) brightness(.9) contrast(1.1);
+    transition: filter .4s;
+  }
+  .ship-frame:hover img { filter: sepia(0%) brightness(1) contrast(1.1); }
+  .ship-tag {
+    position: absolute;
+    top: 14px; right: 14px;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: .18em;
+    color: rgba(201,168,76,.7);
+    background: rgba(7,8,13,.7);
+    padding: 4px 8px;
+    border: 1px solid var(--border2);
+  }
+  .ship-caption {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg2);
+  }
+  .ship-caption-left {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    color: var(--gold);
+  }
+  .ship-caption-right {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: .15em;
+    color: var(--text-dim);
+  }
+
+  /* ── FOOTER ── */
+  .footer-band {
+    margin-top: 70px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    animation: fadeUp .6s 1s forwards;
+  }
+  .footer-band .line { flex: 1; height: 1px; background: var(--border); }
+  .footer-band span {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: .2em;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .hero { grid-template-columns: 1fr; }
+    .portrait-wrap { height: 320px; border-right: none; border-bottom: 1px solid var(--border); }
+    .ability-grid { grid-template-columns: 1fr; }
+    .system-strip { grid-template-columns: 1fr 1fr; }
+    .stat-grid { grid-template-columns: 1fr; }
+    .name-block .surname { font-size: 32px; }
+    .page { padding: 32px 18px 60px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ── TOP BAND ── -->
+  <div class="header-band">
+    <div class="line"></div>
+    <span>RÉPUBLIQ̈UE REDLAND // DOSSIER CLASSIFIÉ // 275 СВ</span>
+    <div class="line"></div>
+  </div>
+
+  <!-- ── HERO ── -->
+  <div class="hero">
+    <div class="portrait-wrap">
+      <!--
+        ┌──────────────────────────────────────────────┐
+        │  ЗАМЕНИТЕ src на ссылку на арт персонажа     │
+        │  Рекомендуемое соотношение: 3:4 (портрет)   │
+        └──────────────────────────────────────────────┘
+      -->
+      <img
+        src="https://placehold.co/560x750/0c0d16/3a1a1c?text=PORTRAIT+LEFEVRE"
+        alt="Sofi Lefevre — портрет"
+      >
+      <div class="portrait-overlay"></div>
+      <div class="portrait-stamp">
+        REP-275-LF-0041<br>
+        PHOTO ID // CONFIDENTIEL
+      </div>
+    </div>
+
+    <div class="stats-panel">
+      <div class="classified-stamp">// ДОСЬЕ СОТРУДНИКА // ДЕЙСТВУЮЩЕЕ //</div>
+
+      <div class="name-block">
+        <div class="given">Sofi</div>
+        <div class="surname">Lefevre</div>
+        <div class="rank-tag">CAPITAINE</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="stat-grid">
+        <div class="stat">
+          <span class="stat-label">Возраст</span>
+          <span class="stat-value">21 год</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Год рождения</span>
+          <span class="stat-value">254 СВ</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Происхождение</span>
+          <span class="stat-value">Редланд, Терциус</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Этническая группа</span>
+          <span class="stat-value">Française</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Подразделение</span>
+          <span class="stat-value gold">ВМФ Республики</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Корабль</span>
+          <span class="stat-value">«Мистраль-7»</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Аффилиация</span>
+          <span class="stat-value rep">Республика Редланд</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label">Специализация</span>
+          <span class="stat-value">Команд. // Медик</span>
+        </div>
+
+        <div class="loyalty-bar-wrap">
+          <div class="loyalty-label">
+            <span>РЕСПУБЛИКА</span>
+            <span>СЕНАТ</span>
+          </div>
+          <div class="loyalty-bar">
+            <div class="loyalty-marker"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── БИОГРАФИЯ ── -->
+  <div class="bracket-box" style="--delay:.35s">
+    <span class="br-bl"></span><span class="br-br"></span>
+
+    <div class="section-label">Биография</div>
+
+    <div class="section-text">
+      <p>
+        Sofi Lefevre родилась в <strong>254 году Свободного периода</strong> в городе-куполе
+        Нуво-Марсель на экваторе Редланда, материк Редланд-Терциус. Её мать, Анн Леферр,
+        была полевым хирургом в гражданском медицинском корпусе; отец, Жак Леферр, — офицером
+        тыловой логистики. Вопросы анатомии и тактики приходили к ней одновременно — через
+        хирургические атласы матери и карты отца, разложенные на одном кухонном столе.
+      </p>
+      <p>
+        В 14 лет Соф поступила в <em>Медицинский институт при Университете Нуво-Марсель</em>,
+        избрав специализацию полевой хирургии и экстренной помощи в условиях ограниченных
+        ресурсов. Диплом давался нелегко — институт был нацелен на нужды гражданской
+        инфраструктуры купола, а не на поле боя. Но именно практика в условиях дефицита
+        сделала её руки уверенными, а решения — быстрыми.
+      </p>
+    </div>
+
+    <!-- System arts strip -->
+    <div class="system-strip">
+      <!--
+        ┌────────────────────────────────────────────────────────┐
+        │  ЗАМЕНИТЕ src в трёх тегах ниже на арты системы /     │
+        │  планет Трангаун. Рекомендуемое соотношение: 4:3.      │
+        └────────────────────────────────────────────────────────┘
+      -->
+      <div class="sys-img-wrap">
+        <img src="https://placehold.co/480x360/060810/1a2a3a?text=TRÄNGAUN+SYSTEM" alt="Система Трангаун">
+        <span class="sys-label">ТРАНГАУН — СИСТЕМА</span>
+      </div>
+      <div class="sys-img-wrap">
+        <img src="https://placehold.co/480x360/08060e/2a1a1a?text=REDLAND+ТЕРМИНАТОР" alt="Редланд, терминатор">
+        <span class="sys-label">РЕДЛАНД — ТЕРМИНАТОР</span>
+      </div>
+      <div class="sys-img-wrap">
+        <img src="https://placehold.co/480x360/060a08/1a2a18?text=REDLAND+ОРБИТА" alt="Редланд, орбита">
+        <span class="sys-label">РЕДЛАНД — ОРБИТА</span>
+      </div>
+    </div>
+
+    <div class="section-text">
+      <p>
+        Когда в <strong>272 году</strong> Независимый Сенат поднял восстание и война вышла
+        за пределы политических дискуссий, Соф подала заявление на зачисление в военно-морской
+        корпус Республики как медик. Однако её способности не вписывались в стандартную
+        должностную инструкцию: она легко читала карты орбитальных манёвров, прокладывала
+        логистику грузовых цепочек, инстинктивно выстраивала иерархию приоритетов под
+        давлением. Командир учебного подразделения и несколько сокурсников убедили её пройти
+        одновременно медицинскую аттестацию <em>и</em> курсы командиров кораблей.
+      </p>
+      <p>
+        Два года она держала два расписания сразу. Засыпала с анатомическим атласом;
+        просыпалась — и разбирала тактику орбитальных перехватов. В дни учебных боёв
+        сама накладывала швы однокурсникам после тренировочных столкновений. Коллектив
+        поддерживал её с тем упрямством, с каким Республика держится за собственные
+        институты: <em>система сильнее любого человека, но человек её воплощает</em>.
+      </p>
+      <p>
+        В <strong>275 году</strong>, во время Гранитного перемирия, Lefevre получила звание
+        <em>Capitaine</em> и командование патрульным кораблём класса «Мистраль» — малым,
+        быстрым, рассчитанным на экипаж в 11 человек. Её присутствие на борту закрывает
+        сразу две критически дефицитных позиции: командира и медика. Редкое сочетание,
+        рождённое войной.
+      </p>
+    </div>
+  </div>
+
+  <!-- ── КОРАБЛЬ ── -->
+  <div class="ship-wrap">
+    <div class="section-label" style="margin-bottom:14px">Приписанный корабль</div>
+    <div class="ship-frame">
+      <!--
+        ┌──────────────────────────────────────────────┐
+        │  ЗАМЕНИТЕ src на ссылку на арт корабля       │
+        │  Рекомендуемое соотношение: ~16:7 (широкий)  │
+        └──────────────────────────────────────────────┘
+      -->
+      <img
+        src="https://placehold.co/900x340/060810/1a2030?text=MISTRAL-7+//+PATROL+CORVETTE"
+        alt="Мистраль-7 — патрульный корвет"
+      >
+      <div class="ship-tag">CONFIDENTIEL</div>
+    </div>
+    <div class="ship-caption">
+      <div class="ship-caption-left">«МИСТРАЛЬ-7» — ПАТРУЛЬНЫЙ КОРВЕТ</div>
+      <div class="ship-caption-right">ВМФ РЕСПУБЛИКИ РЕДЛАНД // КЛАСС «МИСТРАЛЬ»</div>
+    </div>
+    <div class="img-caption">REG. REP-M7-0271 // ДАННЫЕ НА 275 СВ // КОНФИДЕНЦИАЛЬНО</div>
+  </div>
+
+  <!-- ── ХАРАКТЕР ── -->
+  <div class="bracket-box" style="--delay:.5s">
+    <span class="br-bl"></span><span class="br-br"></span>
+
+    <div class="section-label">Психологический профиль</div>
+
+    <div class="section-text">
+      <p>
+        Lefevre — человек системы в лучшем смысле этого слова. Она не просто принимает
+        институты Республики как данность: она верит в них осознанно, понимая, через
+        что они прошли. <strong>Верховенство права, разделение властей, живучесть
+        структуры</strong> — не абстракции, а практический инструмент выживания целой
+        цивилизации. Свободные Бароны для неё не иконы, а прецедент: доказательство,
+        что система работает.
+      </p>
+      <p>
+        В быту она суха, конкретна, неразговорчива. Не из холодности — просто слова
+        для неё дороже, чем кажется: она произносит именно то, что имеет в виду.
+        Экипаж воспринимает это как <em>предсказуемость</em>, а предсказуемость в
+        тесном корпусе корвета стоит больше харизмы. Под давлением она замедляется
+        там, где другие ускоряются: диагноз прежде паники, манёвр прежде выстрела.
+      </p>
+      <p>
+        Сенат для неё не враг в абстрактном смысле — она понимает природу недовольства,
+        давшего ему жизнь. Но методы и последствия для неё неприемлемы. Республика
+        несовершенна, однако у неё есть механизм самокоррекции. У Сената — только
+        офицерский консенсус. Этого, по мнению Lefevre, недостаточно.
+      </p>
+    </div>
+  </div>
+
+  <!-- ── СПОСОБНОСТИ ── -->
+  <div class="bracket-box" style="--delay:.55s">
+    <span class="br-bl"></span><span class="br-br"></span>
+
+    <div class="section-label">Оперативные данные</div>
+
+    <div class="bar-row" style="margin-bottom:24px">
+      <div class="bar-item">
+        <div class="bar-header"><span>БОЕВАЯ ФИЗИЧЕСКАЯ ПОДГОТОВКА</span><span>68%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:68%;--delay:.7s"></div></div>
+      </div>
+      <div class="bar-item">
+        <div class="bar-header"><span>ТАКТИКА И КОМАНДОВАНИЕ</span><span>74%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:74%;--delay:.75s"></div></div>
+      </div>
+      <div class="bar-item">
+        <div class="bar-header"><span>ПОЛЕВАЯ МЕДИЦИНА И ХИРУРГИЯ</span><span>88%</span></div>
+        <div class="bar-track"><div class="bar-fill gold" style="width:88%;--delay:.8s"></div></div>
+      </div>
+      <div class="bar-item">
+        <div class="bar-header"><span>НАВИГАЦИЯ И ОРБИТАЛЬНЫЕ МАНЁВРЫ</span><span>71%</span></div>
+        <div class="bar-track"><div class="bar-fill blue" style="width:71%;--delay:.85s"></div></div>
+      </div>
+      <div class="bar-item">
+        <div class="bar-header"><span>ЛОГИСТИКА И СНАБЖЕНИЕ</span><span>65%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:65%;--delay:.9s"></div></div>
+      </div>
+    </div>
+
+    <div class="ability-grid">
+      <div class="ability-card">
+        <div class="ability-title">Физические параметры</div>
+        <div class="ability-desc">
+          Рост 168 см, лёгкое телосложение. Хорошая выносливость, удовлетворительные
+          показатели силы. Рефлексы выше среднего — сказывается хирургическая
+          практика. Небольшой шрам на левой ладони.
+        </div>
+      </div>
+      <div class="ability-card">
+        <div class="ability-title">Медицинская подготовка</div>
+        <div class="ability-desc">
+          Полный курс медицинского института: полевая хирургия, экстренная помощь
+          в условиях дефицита ресурсов, первичная диагностика. Способна заменить
+          медицинский персонал на борту корвета.
+        </div>
+      </div>
+      <div class="ability-card">
+        <div class="ability-title">Командование</div>
+        <div class="ability-desc">
+          Курсы командиров кораблей ВМФ Республики. Практический опыт: патрули
+          в период перемирия, управление экипажем в 11 человек. Боевого опыта
+          пока минимально — война только начинается.
+        </div>
+      </div>
+      <div class="ability-card">
+        <div class="ability-title">Прочие навыки</div>
+        <div class="ability-desc">
+          Орбитальная навигация в системе Трангаун, базовая тактика перехвата,
+          работа с инфраструктурой купольного города. Читает карты, строит
+          логистические цепочки.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ВНЕШНОСТЬ ── -->
+  <div class="bracket-box" style="--delay:.6s">
+    <span class="br-bl"></span><span class="br-br"></span>
+
+    <div class="section-label">Идентификация // Внешность</div>
+
+    <div class="section-text">
+      <p>
+        Рост — <strong>168 см</strong>. Телосложение лёгкое, подтянутое. Кожа бледная, едва
+        тронутая загаром купольного ультрафиолета. Волосы тёмно-каштановые, коротко острижены —
+        практичность превыше эстетики. Глаза <em>зелёные, с серым подтоном</em> — взгляд ровный,
+        оценивающий, без суеты. На левой ладони — небольшой рваный шрам, след неудачного
+        учебного разреза на втором курсе.
+      </p>
+      <p>
+        Форма всегда опрятна, знаки различия на месте. Вне службы — та же сдержанность:
+        ничего лишнего, ничего случайного. Сложно определить возраст с первого взгляда —
+        держится так, будто ей тридцать.
+      </p>
+    </div>
+  </div>
+
+  <!-- ── FOOTER ── -->
+  <div class="footer-band">
+    <div class="line"></div>
+    <span>RÉPUBLIQ̈UE REDLAND // MINISTÈRE DE LA DÉFENSE // 275 СВ // CONFIDENTIEL</span>
+    <div class="line"></div>
+  </div>
+
+</div>
+</body>
+</html>
